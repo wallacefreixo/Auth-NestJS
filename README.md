@@ -32,6 +32,19 @@
 - Implementação via double-submit cookie usando csurf.
 - Cookie `XSRF-TOKEN` → não httpOnly, lido pelo frontend e enviado no header `X-XSRF-TOKEN`.
 - Protege contra requisições CSRF mesmo com cookies enviados automaticamente.
+- Rota adicional para frontend obter token CSRF:
+
+```
+GET /auth/csrf
+```
+
+**Retorno:**
+
+```json
+{ "csrfToken": "abc123" }
+```
+
+- Frontend deve enviar esse token no header `X-XSRF-TOKEN` em requisições POST/PUT/DELETE.
 
 ### CORS configurado
 
@@ -188,7 +201,21 @@ POST /auth/logout
 - Invalida access_token e refresh_token (apaga cookies)
 - Tokens removidos do Redis
 
-### 5️⃣ Rotas protegidas
+### 5️⃣ Obter token CSRF
+
+```
+GET /auth/csrf
+```
+
+**Retorno:**
+
+```json
+{ "csrfToken": "abc123" }
+```
+
+- Deve ser usado no frontend para enviar header `X-XSRF-TOKEN` em requisições POST/PUT/DELETE
+
+### 6️⃣ Rotas protegidas
 
 ```ts
 @UseGuards(JwtAuthGuard)
@@ -200,5 +227,3 @@ async getProfile() {
 
 - Apenas usuários autenticados podem acessar
 - Requer cookie access_token válido
-
----
